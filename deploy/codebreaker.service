@@ -1,0 +1,16 @@
+[Unit]
+Description=Codebreaker web application
+After=network.target
+
+[Service]
+Type=simple
+User=codex-deploy
+Group=codex-deploy
+WorkingDirectory=/srv/codebreaker
+ExecStart=/srv/codebreaker/bin/codebreaker
+Restart=on-failure
+RestartSec=3
+Environment=HOME=/home/codex-deploy
+
+[Install]
+WantedBy=multi-user.target
