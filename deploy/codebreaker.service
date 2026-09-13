@@ -11,6 +11,10 @@ ExecStart=/srv/codebreaker/bin/codebreaker
 Restart=on-failure
 RestartSec=3
 Environment=HOME=/home/codex-deploy
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=full
 
 [Install]
 WantedBy=multi-user.target
