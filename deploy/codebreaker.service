@@ -11,6 +11,8 @@ ExecStart=/srv/codebreaker/bin/codebreaker
 Restart=on-failure
 RestartSec=3
 Environment=HOME=/home/codex-deploy
+Environment=CODEBREAKER_ENV=production
+EnvironmentFile=/etc/codebreaker.env
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectHome=true

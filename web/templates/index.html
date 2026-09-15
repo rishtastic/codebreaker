@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101820">
+  <title>Codebreaker</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">⌁</span><span>CODEBREAKER</span></div>
+      <div id="connection" class="connection" aria-live="polite">Connecting</div>
+    </header>
+
+    <section id="login-view" class="panel access-panel" hidden>
+      <p class="kicker">Private table</p>
+      <h1>Enter the shared password.</h1>
+      <p class="muted">This game is private. The host will give you the password when it is time to play.</p>
+      <form id="login-form" class="stack">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <button class="primary" type="submit">Unlock the table</button>
+        <p id="login-error" class="error" role="alert"></p>
+      </form>
+    </section>
+
+    <section id="lobby-view" class="panel" hidden>
+      <p class="kicker">One table · two players</p>
+      <h1 id="lobby-title">Ready to break a code?</h1>
+      <p id="lobby-copy" class="muted">Create the only active game, then invite one person to join.</p>
+      <form id="name-form" class="name-form">
+        <label for="name">Your name</label>
+        <input id="name" maxlength="24" placeholder="e.g. Ada" autocomplete="nickname" required>
+        <div class="button-row">
+          <button id="create-button" class="primary" type="submit">Create game</button>
+          <button id="join-button" class="secondary" type="button" hidden>Join existing game</button>
+        </div>
+        <p id="lobby-error" class="error" role="alert"></p>
+      </form>
+      <div id="full-message" class="notice" hidden>Two players are already at the table. Check back when their game is finished.</div>
+    </section>
+
+    <section id="waiting-view" class="panel waiting" hidden>
+      <p class="kicker">Table is open</p>
+      <h1>Waiting for one opponent.</h1>
+      <p class="muted">Keep this page open. Share the private password and this address with the person you want to play.</p>
+      <div class="pulse"><span></span> Listening for a second player</div>
+      <button id="cancel-button" class="ghost" type="button">Cancel game</button>
+    </section>
+
+    <section id="game-view" hidden>
+      <div class="game-head">
+        <div><p class="kicker">Live table</p><h1 id="game-title">Break the code.</h1></div>
+        <div id="turn-badge" class="turn-badge">Waiting</div>
+      </div>
+      <div id="final-banner" class="final-banner" hidden></div>
+      <div class="board-grid">
+        <section class="panel opponent-panel">
+          <div class="section-head"><div><p class="label">Opponent</p><h2 id="opponent-name">Opponent</h2></div><span class="mini-note">Secret code</span></div>
+          <div id="opponent-tiles" class="tiles"></div>
+          <p class="hint">Positions run left to right: A · B · C · D · E</p>
+        </section>
+        <section class="panel questions-panel">
+          <div class="section-head"><div><p class="label">Question market</p><h2>Choose a question</h2></div><span id="question-count" class="mini-note">4 cards</span></div>
+          <div id="questions" class="questions"></div>
+        </section>
+        <section class="panel own-panel">
+          <div class="section-head"><div><p class="label">Your tiles</p><h2 id="player-name">You</h2></div><span class="mini-note">Visible only to you</span></div>
+          <div id="own-tiles" class="tiles"></div>
+        </section>
+        <section class="panel history-panel">
+          <div class="section-head"><div><p class="label">Table record</p><h2>Answers & turns</h2></div></div>
+          <div id="history" class="history" aria-live="polite"></div>
+        </section>
+      </div>
+      <div class="action-bar">
+        <button id="guess-button" class="primary" type="button">Guess the code</button>
+        <button id="resign-button" class="ghost" type="button">Resign</button>
+      </div>
+      <section class="panel notebook-panel">
+        <div class="section-head"><div><p class="label">Private notebook</p><h2>Your notes</h2></div><span class="mini-note">Nothing is filled in for you</span></div>
+        <div id="notebook" class="notebook"></div>
+        <button id="save-notes" class="secondary" type="button">Save notes</button><span id="notes-status" class="save-status"></span>
+      </section>
+    </section>
+
+    <section id="finished-view" class="panel finished" hidden>
+      <p class="kicker">Table closed</p><h1 id="finished-title">Game over.</h1>
+      <div id="revealed-code" class="tiles"></div>
+      <p id="finished-copy" class="muted"></p>
+      <div class="button-row"><button id="rematch-button" class="primary" type="button">Request rematch</button><button id="close-button" class="secondary" type="button">Close table</button></div>
+      <p id="rematch-status" class="muted"></p>
+    </section>
+  </main>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
