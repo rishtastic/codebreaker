@@ -14,10 +14,7 @@ concurrency:
 
 jobs:
   test-and-deploy:
-    runs-on: ubuntu-latest
-    env:
-      VPS_HOST: 77.37.45.23
-      VPS_USER: codex-deploy
+    runs-on: [self-hosted, Linux, X64]
 
     steps:
       - uses: actions/checkout@v4
@@ -32,26 +29,12 @@ jobs:
       - name: Build Linux binary
         run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/codebreaker ./cmd/codebreaker
 
-      - name: Configure deployment SSH key
-        env:
-          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
-        run: |
-          install -d -m 700 ~/.ssh
-          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          printf '%s\n' '77.37.45.23 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFc+J477tleUpXrD5MqUZCtUpu47atKi8zcn/E5Uh1ym' > ~/.ssh/known_hosts
-          chmod 600 ~/.ssh/known_hosts
-
       - name: Deploy and restart
         run: |
-          scp build/codebreaker deploy/codebreaker.service "$VPS_USER@$VPS_HOST:/tmp/"
-          ssh "$VPS_USER@$VPS_HOST" '
-            set -eu
-            sudo install -d -o codex-deploy -g codex-deploy -m 0755 /srv/codebreaker/bin
-            sudo install -o codex-deploy -g codex-deploy -m 0755 /tmp/codebreaker /srv/codebreaker/bin/codebreaker
-            sudo install -o root -g root -m 0644 /tmp/codebreaker.service /etc/systemd/system/codebreaker.service
-            sudo systemctl daemon-reload
-            sudo systemctl enable --now codebreaker.service
-            sudo systemctl restart codebreaker.service
-            curl --fail --silent --show-error http://127.0.0.1:8081/healthz
-          '
+          sudo install -d -o codex-deploy -g codex-deploy -m 0755 /srv/codebreaker/bin
+          sudo install -o codex-deploy -g codex-deploy -m 0755 build/codebreaker /srv/codebreaker/bin/codebreaker
+          sudo install -o root -g root -m 0644 deploy/codebreaker.service /etc/systemd/system/codebreaker.service
+          sudo systemctl daemon-reload
+          sudo systemctl enable --now codebreaker.service
+          sudo systemctl restart codebreaker.service
+          curl --fail --silent --show-error http://127.0.0.1:8081/healthz
