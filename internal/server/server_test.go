@@ -63,6 +63,25 @@ func TestPasswordRequired(t *testing.T) {
 	}
 }
 
+func TestPageUsesSubpathSafeAssetURLs(t *testing.T) {
+	_, s := testApp(t)
+	response, err := http.Get(s.URL + "/")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer response.Body.Close()
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	page := string(body)
+	for _, asset := range []string{`href="static/favicon.svg"`, `href="static/styles.css"`, `src="static/app.js"`} {
+		if !strings.Contains(page, asset) {
+			t.Fatalf("page does not contain subpath-safe asset URL %q", asset)
+		}
+	}
+}
+
 func TestSingleGameAndPrivateViews(t *testing.T) {
 	app, s := testApp(t)
 	first, second, third := client(t), client(t), client(t)
