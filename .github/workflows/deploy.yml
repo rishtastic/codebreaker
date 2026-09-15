@@ -29,6 +29,9 @@ jobs:
       - name: Build Linux binary
         run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/codebreaker ./cmd/codebreaker
 
+      - name: Check production configuration
+        run: sudo test -r /etc/codebreaker.env
+
       - name: Deploy and restart
         run: |
           sudo install -d -o codex-deploy -g codex-deploy -m 0755 /srv/codebreaker/bin
